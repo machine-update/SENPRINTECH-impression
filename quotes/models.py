@@ -1,0 +1,46 @@
+from django.conf import settings
+from django.db import models
+
+
+class QuoteRequest(models.Model):
+    NEW = "new"
+    ANALYZING = "analyzing"
+    SENT = "sent"
+    ACCEPTED = "accepted"
+    REFUSED = "refused"
+    ARCHIVED = "archived"
+    STATUS_CHOICES = [
+        (NEW, "Nouveau"),
+        (ANALYZING, "En analyse"),
+        (SENT, "Devis envoye"),
+        (ACCEPTED, "Accepte"),
+        (REFUSED, "Refuse"),
+        (ARCHIVED, "Archive"),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="quote_requests",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    company_name = models.CharField(max_length=180)
+    contact_name = models.CharField(max_length=180)
+    email = models.EmailField()
+    phone = models.CharField(max_length=60)
+    product_type = models.CharField(max_length=120)
+    desired_quantity = models.PositiveIntegerField()
+    desired_deadline = models.CharField(max_length=120)
+    estimated_budget = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    message = models.TextField()
+    uploaded_file = models.FileField(upload_to="quote_uploads", blank=True, null=True)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default=NEW)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.company_name} - {self.product_type}"

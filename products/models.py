@@ -29,7 +29,44 @@ class Product(models.Model):
     
     def get_absolute_url(self):
         return reverse('products:product_detail', kwargs={'id':self.id, 'slug':self.slug})
-    
-        
-    
-    
+
+
+class ProductOption(models.Model):
+    SELECT = "select"
+    TEXT = "text"
+    FILE = "file"
+    INPUT_TYPE_CHOICES = [
+        (SELECT, "Liste de choix"),
+        (TEXT, "Texte libre"),
+        (FILE, "Upload fichier"),
+    ]
+
+    product = models.ForeignKey(Product, related_name="options", on_delete=models.CASCADE)
+    name = models.CharField(max_length=120)
+    code = models.SlugField(max_length=80)
+    input_type = models.CharField(max_length=20, choices=INPUT_TYPE_CHOICES, default=SELECT)
+    required = models.BooleanField(default=True)
+    help_text = models.CharField(max_length=250, blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "id"]
+        unique_together = ("product", "code")
+
+    def __str__(self):
+        return f"{self.product.name} - {self.name}"
+
+
+class ProductOptionChoice(models.Model):
+    option = models.ForeignKey(ProductOption, related_name="choices", on_delete=models.CASCADE)
+    label = models.CharField(max_length=120)
+    value = models.SlugField(max_length=80)
+    price_delta = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["sort_order", "id"]
+        unique_together = ("option", "value")
+
+    def __str__(self):
+        return f"{self.option.name}: {self.label}"

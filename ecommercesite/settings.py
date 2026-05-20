@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-vw$4kjb@u+@o#ic7k+=_$__x0c#%d*u@jzk2kz1b$ind+&6-b3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',
+    'quotes',
     'products',
     'cart',
     'orders',
@@ -65,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'ecommercesite.context_processors.whatsapp',
             ],
         },
     },
@@ -129,3 +132,11 @@ STATICFILES_DIRS = [BASE_DIR / "static",]
 MEDIA_URL = 'media/'
 STATIC_ROOT = BASE_DIR/'staticfiles'
 MEDIA_ROOT = BASE_DIR/'mediafiles'
+
+LOGIN_URL = "accounts:login"
+LOGIN_REDIRECT_URL = "accounts:account_home"
+LOGOUT_REDIRECT_URL = "products:product_list"
+
+WHATSAPP_NUMBER = "221710460959"
+WHATSAPP_DISPLAY_NUMBER = "+221 71 046 09 59"
+WHATSAPP_GENERAL_MESSAGE = "Bonjour SenPrinTech, je souhaite avoir des informations sur vos services d'impression."

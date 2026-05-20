@@ -3,31 +3,135 @@
 {%block title%}{{product.name}}{%endblock%}
 
 {%block content%}
-<div class="container mx-auto p-4 flex">
-
-<div>
+<div class="product-detail">
+<div class="detail-image">
     {%if product.image%}
-    <img src="{{product.image.url}}" alt={{product.name}} class="max-h-[80vh]">
+    <img src="{{product.image.url}}" alt="{{product.name}}">
     {%else%}
-    <p>The image is not available</p>
+    <div class="image-placeholder">Image bientot disponible</div>
     {%endif%}
-    <h3 class="font-semibold">{{product.name}}</h3>
-    <p>{{product.description}}</p>
-    <p class="text-indigo-600">${{product.price}}</p>
-
-    <form action="{%url 'cart:cart_add' product.id%}" method="post" id="add-to-cart-form">
-        {% csrf_token %}
-        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">Add to cart</button>
-    <p id="message"></p>
-    </form>
 </div>
+<div class="detail-copy">
+    <p class="eyebrow">{{product.category.name}}</p>
+    <h1>{{product.name}}</h1>
+    <p class="detail-description">{{product.description}}</p>
+    <p class="detail-price"><span id="configured-price">{{product.price}}</span> FCFA</p>
 
-
-
+    <form action="{%url 'cart:cart_add' product.id%}" method="post" id="add-to-cart-form" class="detail-form" enctype="multipart/form-data" data-base-price="{{product.price}}">
+        {% csrf_token %}
+        {% if product.options.exists %}
+        <div class="option-panel">
+            <div class="option-heading">
+                <h2>Configurer votre commande</h2>
+                <p>Choisissez les options adaptees a votre besoin.</p>
+            </div>
+            <div class="option-grid">
+                {% for option in product.options.all %}
+                <label class="option-field">
+                    <span>{{ option.name }}</span>
+                    {% if option.help_text %}<small>{{ option.help_text }}</small>{% endif %}
+                    {% if option.input_type == "select" %}
+                    <select name="option_{{ option.id }}" {% if option.required %}required{% endif %}>
+                        {% for choice in option.choices.all %}
+                        <option value="{{ choice.id }}" data-price-delta="{{ choice.price_delta }}">{{ choice.label }}{% if choice.price_delta %} (+{{ choice.price_delta }} FCFA){% endif %}</option>
+                        {% endfor %}
+                    </select>
+                    {% elif option.input_type == "file" %}
+                    <input type="file" name="option_{{ option.id }}" {% if option.required %}required{% endif %}>
+                    {% elif option.input_type == "text" %}
+                    <textarea name="option_{{ option.id }}" rows="3" {% if option.required %}required{% endif %} placeholder="Texte a imprimer, consignes, details..."></textarea>
+                    {% endif %}
+                </label>
+                {% endfor %}
+            </div>
+            <div class="order-preview">
+                <div>
+                    <p class="preview-label">Resume des choix</p>
+                    <ul id="option-summary"></ul>
+                </div>
+                <strong><span id="preview-price">{{product.price}}</span> FCFA</strong>
+            </div>
+        </div>
+        {% endif %}
+        <div class="cart-quantity-panel">
+            <label class="option-field">
+                <span>Nombre d'exemplaires de cette configuration</span>
+                <small>Exemple : 500 flyers A5 recto-verso x 2 commandes identiques.</small>
+                <input type="number" name="cart_quantity" id="cart-quantity" value="1" min="1" max="99" step="1" required>
+            </label>
+            <div class="line-total-preview">
+                <span>Total ligne estime</span>
+                <strong><span id="line-total">{{product.price}}</span> FCFA</strong>
+            </div>
+        </div>
+        <button type="submit" class="button button-primary">Ajouter au panier</button>
+        <a href="{{ product_whatsapp_url }}" class="button whatsapp-product-button" target="_blank" rel="noopener">
+            Demander conseil sur WhatsApp
+        </a>
+    <div id="cart-notification" class="cart-notification" role="status" aria-live="polite">
+        <strong>Produit ajoute au panier</strong>
+        <span id="message">Votre configuration a bien ete sauvegardee.</span>
+        <a href="{% url 'cart:cart_detail' %}">Voir le panier</a>
+    </div>
+    </form>
+    <div class="detail-notes">
+        <p>BAT possible avant production</p>
+        <p>Retrait ou livraison locale</p>
+        <p>Support pro et particuliers</p>
+    </div>
+</div>
 </div>
 
 <script>
-    document.getElementById('add-to-cart-form').addEventListener("submit", function(event){
+    const productForm = document.getElementById('add-to-cart-form');
+    const configuredPrice = document.getElementById('configured-price');
+    const previewPrice = document.getElementById('preview-price');
+    const lineTotal = document.getElementById('line-total');
+    const cartQuantity = document.getElementById('cart-quantity');
+    const optionSummary = document.getElementById('option-summary');
+
+    function formatPrice(value) {
+        return Number(value || 0).toLocaleString('fr-FR', { maximumFractionDigits: 0 });
+    }
+
+    function updatePreview() {
+        if (!productForm || !optionSummary) return;
+
+        let price = Number(productForm.dataset.basePrice || 0);
+        optionSummary.innerHTML = '';
+
+        productForm.querySelectorAll('.option-field').forEach((field) => {
+            const label = field.querySelector('span')?.textContent || '';
+            const control = field.querySelector('select, input, textarea');
+            if (!control) return;
+
+            let value = '';
+            if (control.tagName === 'SELECT') {
+                const selected = control.options[control.selectedIndex];
+                value = selected ? selected.textContent.replace(/\s*\(\+.*?\)$/, '') : '';
+                price += Number(selected?.dataset.priceDelta || 0);
+            } else if (control.type === 'file') {
+                value = control.files.length ? control.files[0].name : 'Fichier a ajouter';
+            } else {
+                value = control.value || 'Optionnel';
+            }
+
+            const item = document.createElement('li');
+            item.textContent = `${label}: ${value}`;
+            optionSummary.appendChild(item);
+        });
+
+        const quantity = Math.max(1, Number(cartQuantity?.value || 1));
+        if (configuredPrice) configuredPrice.textContent = formatPrice(price);
+        if (previewPrice) previewPrice.textContent = formatPrice(price);
+        if (lineTotal) lineTotal.textContent = formatPrice(price * quantity);
+    }
+
+    productForm?.addEventListener('change', updatePreview);
+    productForm?.addEventListener('input', updatePreview);
+    updatePreview();
+
+    productForm.addEventListener("submit", function(event){
         event.preventDefault();
 
         const form = event.target;
@@ -43,15 +147,21 @@
         })
         .then(response => response.json())
         .then(data=>{
+            const notification = document.getElementById('cart-notification');
             const messageElement = document.getElementById('message');
+            notification.classList.remove('is-error');
             if (data.success){
-                messageElement.textContent = data.message;
+                messageElement.textContent = `Quantite: ${data.quantity} | Total ligne: ${data.line_total} FCFA`;
+                notification.classList.add('is-visible');
             }else{
-                message.textContent = "Failed to add to cart";
+                messageElement.textContent = data.message || "Impossible d'ajouter ce produit.";
+                notification.classList.add('is-visible', 'is-error');
             }
         })
         .catch(error=>{
-            console.error("Error", error);
+            const notification = document.getElementById('cart-notification');
+            document.getElementById('message').textContent = "Une erreur est survenue. Veuillez reessayer.";
+            notification.classList.add('is-visible', 'is-error');
         })
     })
 </script>

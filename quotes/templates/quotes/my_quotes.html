@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{%block title%}Mes devis - SenPrinTech{%endblock%}
+
+{%block content%}
+<section class="account-page">
+    <div class="section-inner">
+        <div class="account-dashboard-hero">
+            <div>
+                <p class="eyebrow">Devis</p>
+                <h1>Mes devis</h1>
+                <p>Retrouvez vos demandes entreprise et leur statut de traitement.</p>
+            </div>
+            <a href="{% url 'quotes:enterprise_quote' %}" class="button button-secondary-dark">Nouvelle demande</a>
+        </div>
+        <div class="order-table premium-order-table">
+            {% for quote in quotes %}
+            <a class="order-row" href="{% url 'accounts:quote_detail' quote.id %}">
+                <span>Devis #{{ quote.id }}</span>
+                <span>{{ quote.company_name }}</span>
+                <strong class="status-pill">{{ quote.get_status_display }}</strong>
+                <span>{{ quote.created_at|date:"d/m/Y H:i" }}</span>
+            </a>
+            {% empty %}
+            <div class="empty-state">Aucune demande de devis pour le moment.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{%endblock%}

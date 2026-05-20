@@ -18,9 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from ecommercesite.admin_dashboard import install_admin_dashboard
+
+install_admin_dashboard(admin.site)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("compte/", include("accounts.urls")),
+    path("", include("quotes.urls")),
     path("cart/", include('cart.urls')),
     path("orders/", include("orders.urls")),
     path('', include('products.urls', namespace='products')),

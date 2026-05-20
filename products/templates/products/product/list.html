@@ -1,48 +1,197 @@
 {% extends "base.html" %}
 
-{%block title%}My site{%endblock%}
+{%block title%}SenPrinTech - Impression en ligne{%endblock%}
 
 {%block content%}
 
-<div class="container mx-auto p-4 flex">
-    <aside class="w-1/4 p-4">
-        <h2 class="font-bold">Categories:</h2>
-        <ul>
-            {%for category in categories%}
-            <li>
-                <a href="{% url 'products:product_list_by_category' category.slug %}">{{category.name}}</a>
-            </li>
-            {%endfor%}
-            
-        </ul>
-    </aside>
-    <main class="w-3/4 p-4">
-        {%if category%}
-        <h2 class="font-bold mb-4">{{category.name}}</h2>
-        {%else%}
-        <h2 class="font-bold mb-4">All Products:</h2>
-
-        {%endif%}
-        <div class="grid grid-cols-3 gap-4">
-            {% for product in products %}
-            <a href="{% url 'products:product_detail' product.id product.slug %}">
-            <div>
-                {% if product.image %}
-                <img src="{{product.image.url}}" alt={{product.name}} class="h-64 w-44 object-cover">
-                {%else%}
-                <p>The image is not available</p>
-                {%endif%}
-
-                <h3 class="font-semibold">{{product.name}}</h3>
-                <p>{{product.description}}</p>
-                <p class="text-indigo-600">${{product.price}}</p>
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-copy">
+            <p class="eyebrow">SenPrinTech</p>
+            <h1>Imprimez vos essentiels.</h1>
+            <p class="hero-text">Flyers, cartes, textile et objets personnalises. Commande simple, finition propre.</p>
+            <div class="hero-actions">
+                <a href="#catalogue" class="button button-primary">Voir les produits</a>
+                <a href="{% url 'quotes:enterprise_quote' %}" class="button button-secondary">Demander un devis</a>
             </div>
-        </a>
-            {%endfor%}
-
         </div>
-    </main>
-    
-</div>
+        <div class="hero-media" aria-label="Supports imprimes SenPrinTech">
+            <div class="product-collage">
+                <figure class="collage-item collage-flyer">
+                    <img src="/media/products/FLYERS.png" alt="Flyers imprimes SenPrinTech">
+                </figure>
+                <figure class="collage-item collage-card">
+                    <img src="/media/products/cartevisite.png" alt="Cartes de visite SenPrinTech">
+                </figure>
+                <figure class="collage-item collage-shirt">
+                    <img src="/media/products/T-Shirt.png" alt="T-shirt personnalise SenPrinTech">
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="categories" class="category-section">
+    <div class="section-inner">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Categories</p>
+                <h2>Choisissez votre support</h2>
+            </div>
+            <a href="{% url 'products:product_list'%}" class="text-link">Tous les produits</a>
+        </div>
+        <div class="category-list">
+            {%for category in categories%}
+            <a href="{% url 'products:product_list_by_category' category.slug %}" class="category-pill {% if category.slug == request.resolver_match.kwargs.category_slug %}is-active{% endif %}">
+                {{category.name}}
+            </a>
+            {%endfor%}
+        </div>
+    </div>
+</section>
+
+<section id="catalogue" class="catalogue-section">
+    <div class="section-inner">
+        <div class="section-heading">
+            <div>
+                {%if category%}
+                <p class="eyebrow">Selection</p>
+                <h2>{{category.name}}</h2>
+                {%else%}
+                <p class="eyebrow">Produits populaires</p>
+                <h2>Les essentiels SenPrinTech</h2>
+                {%endif%}
+            </div>
+            <p class="section-note">Des supports prets pour vos campagnes, boutiques, equipes et evenements.</p>
+        </div>
+        <div class="product-grid">
+            {% for product in products %}
+            <a href="{% url 'products:product_detail' product.id product.slug %}" class="product-card">
+                <div class="product-image">
+                    {% if product.image %}
+                    <img src="{{product.image.url}}" alt="{{product.name}}">
+                    {%else%}
+                    <div class="image-placeholder">Image bientot disponible</div>
+                    {%endif%}
+                </div>
+                <div class="product-content">
+                    <p class="product-category">{{product.category.name}}</p>
+                    <h3>{{product.name}}</h3>
+                    <p class="product-description">{{product.description}}</p>
+                    <div class="product-bottom">
+                        <p class="product-price">{{product.price}} FCFA</p>
+                        <span class="product-cta">Voir</span>
+                    </div>
+                </div>
+            </a>
+            {%empty%}
+            <div class="empty-state">
+                Aucun produit disponible pour le moment. Lancez la commande de seed pour ajouter les produits test SenPrinTech.
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+</section>
+
+<section id="services" class="services-section">
+    <div class="section-inner">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Services impression</p>
+                <h2>Des solutions pour particuliers et entreprises</h2>
+            </div>
+            <p class="section-note">Une base simple pour vendre en ligne aujourd'hui, et evoluer demain vers des options plus avancees.</p>
+        </div>
+        <div class="service-grid">
+            <article class="service-card">
+                <span>01</span>
+                <h3>Supports marketing</h3>
+                <p>Flyers, affiches, cartes et supports de campagne pour lancer une offre ou annoncer un evenement.</p>
+            </article>
+            <article class="service-card">
+                <span>02</span>
+                <h3>Objets personnalises</h3>
+                <p>T-shirts, mugs et stickers pour equipes, cadeaux clients, boutiques et collections limitees.</p>
+            </article>
+            <article class="service-card">
+                <span>03</span>
+                <h3>Impression entreprise</h3>
+                <p>Commandes recurrentes, supports commerciaux, packaging leger et accompagnement sur les fichiers.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section id="personalisation" class="split-section">
+    <div class="section-inner split-inner">
+        <div>
+            <p class="eyebrow">Personnalisation</p>
+            <h2>Envoyez votre visuel, choisissez le support, validez la commande.</h2>
+        </div>
+        <div class="process-list">
+            <p><strong>1. Produit</strong> Choisissez le support adapte a votre besoin.</p>
+            <p><strong>2. Fichier</strong> Preparez votre design ou demandez un accompagnement.</p>
+            <p><strong>3. Production</strong> Nous preparons l'impression et confirmons les details.</p>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="about-section">
+    <div class="section-inner about-inner">
+        <p class="eyebrow">A propos</p>
+        <h2>SenPrinTech construit une experience d'impression en ligne claire, rapide et fiable.</h2>
+        <p>Cette phase pose les bases : catalogue administrable, panier fonctionnel, vitrine responsive et pages produit propres. Les fonctionnalites avancees viendront ensuite sans casser l'architecture.</p>
+    </div>
+</section>
+
+<section id="contact" class="contact-section">
+    <div class="section-inner contact-inner">
+        <div class="contact-copy">
+            <p class="eyebrow">Contact</p>
+            <h2>Parlez-nous de votre projet d'impression.</h2>
+            <p>Besoin de flyers, textiles, cartes, mugs, stickers ou supports entreprise ? Envoyez votre demande et nous vous recontactons avec les prochaines etapes.</p>
+            <div class="contact-direct">
+                <a href="mailto:contact@senprintech.com">contact@senprintech.com</a>
+                <a href="tel:+221710460959">+221 71 046 09 59</a>
+                <a href="{{ WHATSAPP_GENERAL_URL }}" target="_blank" rel="noopener" class="whatsapp-inline-link">
+                    Discuter sur WhatsApp
+                </a>
+            </div>
+        </div>
+        <form action="{% url 'products:contact_submit' %}" method="post" class="contact-form" novalidate>
+            {% csrf_token %}
+            <div class="form-grid">
+                <label>
+                    <span>{{ contact_form.name.label }}</span>
+                    {{ contact_form.name }}
+                    {% for error in contact_form.name.errors %}<small>{{ error }}</small>{% endfor %}
+                </label>
+                <label>
+                    <span>{{ contact_form.email.label }}</span>
+                    {{ contact_form.email }}
+                    {% for error in contact_form.email.errors %}<small>{{ error }}</small>{% endfor %}
+                </label>
+            </div>
+            <div class="form-grid">
+                <label>
+                    <span>{{ contact_form.phone.label }}</span>
+                    {{ contact_form.phone }}
+                    {% for error in contact_form.phone.errors %}<small>{{ error }}</small>{% endfor %}
+                </label>
+                <label>
+                    <span>{{ contact_form.project_type.label }}</span>
+                    {{ contact_form.project_type }}
+                    {% for error in contact_form.project_type.errors %}<small>{{ error }}</small>{% endfor %}
+                </label>
+            </div>
+            <label>
+                <span>{{ contact_form.message.label }}</span>
+                {{ contact_form.message }}
+                {% for error in contact_form.message.errors %}<small>{{ error }}</small>{% endfor %}
+            </label>
+            <button type="submit" class="button button-primary">Envoyer la demande</button>
+        </form>
+    </div>
+</section>
 
 {%endblock%}

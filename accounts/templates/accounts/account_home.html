@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{%block title%}Mon compte - SenPrinTech{%endblock%}
+
+{%block content%}
+<section class="account-page">
+    <div class="section-inner">
+        <div class="account-dashboard-hero">
+            <div>
+                <p class="eyebrow">Mon compte</p>
+                <h1>Bonjour {{ request.user.first_name|default:request.user.username }}.</h1>
+                <p>Votre espace pour suivre vos commandes SenPrinTech et retrouver vos fichiers.</p>
+            </div>
+            <a href="{% url 'accounts:order_list' %}" class="button button-secondary-dark">Voir toutes mes commandes</a>
+        </div>
+        <div class="account-grid">
+            <div class="account-card account-metric">
+                <span>Profil</span>
+                <h3>Informations client</h3>
+                <p class="account-muted">{{ request.user.email|default:"Email non renseigne" }}</p>
+                <p class="account-muted">Nom d'utilisateur : {{ request.user.username }}</p>
+            </div>
+            <div class="account-card account-metric">
+                <span>Suivi</span>
+                <h3>Commandes recentes</h3>
+                {% for order in recent_orders %}
+                <a class="order-row" href="{% url 'accounts:order_detail' order.id %}">
+                    <span>Commande #{{ order.id }}</span>
+                    <strong class="status-pill">{{ order.get_status_display }}</strong>
+                </a>
+                {% empty %}
+                <p class="account-muted">Aucune commande pour le moment.</p>
+                {% endfor %}
+            </div>
+            <div class="account-card account-metric">
+                <span>Entreprise</span>
+                <h3>Devis recents</h3>
+                {% for quote in recent_quotes %}
+                <a class="order-row" href="{% url 'accounts:quote_detail' quote.id %}">
+                    <span>Devis #{{ quote.id }}</span>
+                    <strong class="status-pill">{{ quote.get_status_display }}</strong>
+                </a>
+                {% empty %}
+                <p class="account-muted">Aucun devis pour le moment.</p>
+                {% endfor %}
+                <a href="{% url 'quotes:enterprise_quote' %}" class="text-link">Demander un devis</a>
+            </div>
+        </div>
+    </div>
+</section>
+{%endblock%}

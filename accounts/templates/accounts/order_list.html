@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{%block title%}Mes commandes - SenPrinTech{%endblock%}
+
+{%block content%}
+<section class="account-page">
+    <div class="section-inner">
+        <div class="account-dashboard-hero">
+            <div>
+                <p class="eyebrow">Suivi</p>
+                <h1>Mes commandes</h1>
+                <p>Consultez les statuts, options, fichiers et totaux de vos commandes.</p>
+            </div>
+            <a href="{% url 'products:product_list' %}#catalogue" class="button button-secondary-dark">Commander encore</a>
+        </div>
+        <div class="order-table premium-order-table">
+            {% for order in orders %}
+            <a class="order-row" href="{% url 'accounts:order_detail' order.id %}">
+                <span>Commande #{{ order.id }}</span>
+                <span>{{ order.created_at|date:"d/m/Y H:i" }}</span>
+                <strong class="status-pill">{{ order.get_status_display }}</strong>
+                <span>{{ order.get_total_cost }} FCFA</span>
+            </a>
+            {% empty %}
+            <div class="empty-state">Vous n'avez pas encore de commande.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{%endblock%}

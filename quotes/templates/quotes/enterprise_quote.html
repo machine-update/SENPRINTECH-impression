@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{%block title%}Impression Entreprise - SenPrinTech{%endblock%}
+
+{%block content%}
+<section class="quote-page">
+    <div class="section-inner quote-hero">
+        <div>
+            <p class="eyebrow">Impression Entreprise</p>
+            <h1>Des volumes, des delais, une finition pro.</h1>
+            <p>Demandez un devis pour vos campagnes, supports commerciaux, goodies, packaging leger ou impressions personnalisees en volume.</p>
+            <div class="auth-benefits">
+                <span>Devis personnalise</span>
+                <span>Fichiers logo</span>
+                <span>Suivi admin</span>
+            </div>
+        </div>
+        <div class="quote-stat-card">
+            <strong>24-48h</strong>
+            <span>pour une premiere reponse selon la complexite du besoin</span>
+        </div>
+    </div>
+</section>
+
+<section class="quote-form-section">
+    <div class="section-inner account-layout">
+        <form method="post" enctype="multipart/form-data" class="account-card auth-form quote-form-card">
+            {% csrf_token %}
+            <p class="eyebrow">Demande de devis</p>
+            <h2>Parlez-nous du projet</h2>
+            <div class="auth-grid">
+                <label><span>{{ form.company_name.label }}</span>{{ form.company_name }}{% for error in form.company_name.errors %}<small>{{ error }}</small>{% endfor %}</label>
+                <label><span>{{ form.contact_name.label }}</span>{{ form.contact_name }}{% for error in form.contact_name.errors %}<small>{{ error }}</small>{% endfor %}</label>
+            </div>
+            <div class="auth-grid">
+                <label><span>{{ form.email.label }}</span>{{ form.email }}{% for error in form.email.errors %}<small>{{ error }}</small>{% endfor %}</label>
+                <label><span>{{ form.phone.label }}</span>{{ form.phone }}{% for error in form.phone.errors %}<small>{{ error }}</small>{% endfor %}</label>
+            </div>
+            <div class="auth-grid">
+                <label><span>{{ form.product_type.label }}</span>{{ form.product_type }}{% for error in form.product_type.errors %}<small>{{ error }}</small>{% endfor %}</label>
+                <label><span>{{ form.desired_quantity.label }}</span>{{ form.desired_quantity }}{% for error in form.desired_quantity.errors %}<small>{{ error }}</small>{% endfor %}</label>
+            </div>
+            <div class="auth-grid">
+                <label><span>{{ form.desired_deadline.label }}</span>{{ form.desired_deadline }}{% for error in form.desired_deadline.errors %}<small>{{ error }}</small>{% endfor %}</label>
+                <label><span>{{ form.estimated_budget.label }}</span>{{ form.estimated_budget }}{% for error in form.estimated_budget.errors %}<small>{{ error }}</small>{% endfor %}</label>
+            </div>
+            <label><span>{{ form.message.label }}</span>{{ form.message }}{% for error in form.message.errors %}<small>{{ error }}</small>{% endfor %}</label>
+            <label><span>{{ form.uploaded_file.label }}</span>{{ form.uploaded_file }}{% for error in form.uploaded_file.errors %}<small>{{ error }}</small>{% endfor %}</label>
+            <button class="button button-primary" type="submit">Envoyer la demande</button>
+        </form>
+        <aside class="account-side checkout-summary">
+            <h2>Pour les entreprises</h2>
+            <div class="mini-order"><strong>Volumes</strong><span>Flyers, cartes, stickers, textile, objets marques.</span></div>
+            <div class="mini-order"><strong>Personnalisation</strong><span>Logo, fichier source, consignes, finitions.</span></div>
+            <div class="mini-order"><strong>Suivi</strong><span>Les clients connectes retrouvent leurs devis dans leur espace.</span></div>
+        </aside>
+    </div>
+</section>
+{%endblock%}

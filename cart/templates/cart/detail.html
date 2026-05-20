@@ -1,42 +1,77 @@
 {% extends "base.html" %}
-{%block title%}My Cart{%endblock%}
+{%block title%}Panier - SenPrinTech{%endblock%}
 
 
 {%block content%}
-<h2 class="text-2xl font-semibold mb-4">My Cart</h2>
+<section class="cart-page">
+<div class="section-inner">
+<div class="section-heading">
+    <div>
+        <p class="eyebrow">Panier</p>
+        <h2>Verifiez votre commande</h2>
+    </div>
+    <a href="{% url 'products:product_list'%}#catalogue" class="text-link">Continuer vos achats</a>
+</div>
 
 {%if cart %}
-<ul class="space-y-4">
-    {%for item in cart.items.all %}
-    <li class="flex items-center p-4">
-        {%if item.product.image%}
-        <img src="{{item.product.image.url}}" alt={{item.product.name}} class="w-24 mr-4">
-        {%endif%}
-        <div class="flex-grow">
-            <a href="{%url 'products:product_detail' item.product.id item.product.slug%}">
-        <h3 class="font-semibold text-lg">{{item.product.name}}</h3>
-            </a>
-        <p class="text-gray-700">{{item.product.description}}</p>
-        <p class="text-indigo-600">${{item.product.price}}</p>
-        <p class="text-gray-600">Quantity: {{item.quantity}}</p>
+<div class="checkout-layout">
+    <ul class="cart-list">
+        {%for item in cart.items.all %}
+        <li class="cart-item">
+            {%if item.product.image%}
+            <img src="{{item.product.image.url}}" alt="{{item.product.name}}">
+            {%endif%}
+            <div class="cart-item-content">
+                <a href="{%url 'products:product_detail' item.product.id item.product.slug%}" class="cart-item-title">
+                    <h3>{{item.product.name}}</h3>
+                </a>
+                <p>{{item.product.description}}</p>
+                {% if item.selected_options %}
+                <ul class="cart-options">
+                    {% for option in item.selected_options %}
+                    <li><strong>{{ option.name }}:</strong> {{ option.label|default:option.value }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% if item.uploaded_file %}
+                <p class="cart-upload"><strong>Fichier:</strong> <a href="{{ item.uploaded_file.url }}" target="_blank" rel="noopener">{{ item.uploaded_file.name }}</a></p>
+                {% endif %}
+                <div class="cart-price-grid">
+                    <p><span>Quantite</span><strong>{{item.quantity}}</strong></p>
+                    <p><span>Unitaire</span><strong>{{item.get_unit_price}} FCFA</strong></p>
+                    <p><span>Total</span><strong>{{item.get_total_price}} FCFA</strong></p>
+                </div>
 
-<div class="flex-shrink">
-   <form action="{%url 'cart:remove_item' item.id %}"  method="post">
-    {%csrf_token%}
-    <button type="submit" class="bg-red-600 text-white px-4 py-1 text-xs rounded">X</button>
-   </form>
-</div>
+                <form action="{%url 'cart:remove_item' item.id %}" method="post">
+                    {%csrf_token%}
+                    <button type="submit" class="remove-button">Retirer</button>
+                </form>
+            </div>
+        </li>
+        {%endfor%}
+    </ul>
+
+    <aside class="order-summary-card">
+        <p class="eyebrow">Resume</p>
+        <h3>Total panier</h3>
+        <div class="summary-lines">
+            {% for item in cart.items.all %}
+            <p><span>{{ item.product.name }} x{{ item.quantity }}</span><strong>{{ item.get_total_price }} FCFA</strong></p>
+            {% endfor %}
         </div>
-    </li>
-    {%endfor%}
-</ul>
-
-<p><strong>Total Price: ${{cart.get_total_price}}</strong></p>
+        <div class="cart-summary">
+            <p>Total</p>
+            <strong>{{cart.get_total_price}} FCFA</strong>
+        </div>
+        <form action="{% url 'orders:order_create'%}" method="get">
+            <button type="submit" class="button button-primary">Finaliser la commande</button>
+        </form>
+        <p class="checkout-note">Paiement non debite maintenant. Validation finale a l'etape suivante.</p>
+    </aside>
+</div>
 {%else%}
-<p>Your Cart is empty.</p>
+<div class="empty-state">Votre panier est vide.</div>
 {% endif %}
-<form action="{% url 'orders:order_create'%}" method="post">
-    {%csrf_token%}
-    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded mt-0.5">Proceed to Checkout</button>
-</form>
+</div>
+</section>
 {%endblock%}

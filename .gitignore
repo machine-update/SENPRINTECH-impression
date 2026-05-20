@@ -9,6 +9,9 @@ __pycache__/
 *.log
 *.sqlite3
 /media
+/mediafiles/client_uploads/
+/mediafiles/order_proofs/
+/mediafiles/quote_uploads/
 /staticfiles
 .env
 *.pot

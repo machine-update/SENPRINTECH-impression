@@ -12,7 +12,13 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name="cart_items", on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    configured_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    selected_options = models.JSONField(default=list, blank=True)
+    uploaded_file = models.FileField(upload_to="client_uploads", blank=True, null=True)
+
+    def get_unit_price(self):
+        return self.configured_price or self.product.price
     
     def get_total_price(self):
-        return self.product.price * self.quantity
+        return self.get_unit_price() * self.quantity
     

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{%block title%}Inscription - SenPrinTech{%endblock%}
+
+{%block content%}
+<section class="account-page">
+    <div class="section-inner auth-shell">
+        <div class="auth-hero-panel">
+            <p class="eyebrow">SenPrinTech</p>
+            <h1>Un compte pour commander plus vite.</h1>
+            <p>Gardez vos commandes, fichiers et statuts au meme endroit, de la validation a la livraison.</p>
+            <div class="auth-benefits">
+                <span>Panier sauvegarde</span>
+                <span>Suivi commande</span>
+                <span>Historique client</span>
+            </div>
+        </div>
+        <div class="account-card auth-card auth-card-wide">
+            <p class="eyebrow">Inscription</p>
+            <h1>Creer votre compte</h1>
+            <p class="account-muted">Suivez vos commandes, retrouvez vos fichiers et gagnez du temps lors des prochaines impressions.</p>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <div class="auth-grid">
+                    <label>
+                        <span>{{ form.username.label }}</span>
+                        {{ form.username }}
+                        {% for error in form.username.errors %}<small>{{ error }}</small>{% endfor %}
+                    </label>
+                    <label>
+                        <span>{{ form.email.label }}</span>
+                        {{ form.email }}
+                        {% for error in form.email.errors %}<small>{{ error }}</small>{% endfor %}
+                    </label>
+                </div>
+                <div class="auth-grid">
+                    <label>
+                        <span>{{ form.first_name.label }}</span>
+                        {{ form.first_name }}
+                        {% for error in form.first_name.errors %}<small>{{ error }}</small>{% endfor %}
+                    </label>
+                    <label>
+                        <span>{{ form.last_name.label }}</span>
+                        {{ form.last_name }}
+                        {% for error in form.last_name.errors %}<small>{{ error }}</small>{% endfor %}
+                    </label>
+                </div>
+                <label>
+                    <span>{{ form.password1.label }}</span>
+                    {{ form.password1 }}
+                    {% for error in form.password1.errors %}<small>{{ error }}</small>{% endfor %}
+                </label>
+                <label>
+                    <span>{{ form.password2.label }}</span>
+                    {{ form.password2 }}
+                    {% for error in form.password2.errors %}<small>{{ error }}</small>{% endfor %}
+                </label>
+                <p class="password-note">Utilisez au moins 8 caracteres, avec un mot de passe pas trop proche de vos informations personnelles.</p>
+                <button class="button button-primary" type="submit">Creer mon compte</button>
+            </form>
+            <p class="account-switch">Deja inscrit ? <a href="{% url 'accounts:login' %}">Se connecter</a></p>
+        </div>
+    </div>
+</section>
+{%endblock%}

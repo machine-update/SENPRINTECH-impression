@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{%block title%}Connexion - SenPrinTech{%endblock%}
+
+{%block content%}
+<section class="account-page">
+    <div class="section-inner auth-shell">
+        <div class="auth-hero-panel">
+            <p class="eyebrow">Espace client</p>
+            <h1>Suivez vos impressions comme une commande premium.</h1>
+            <p>Retrouvez vos fichiers, vos options, vos statuts et vos commandes dans un espace simple et clair.</p>
+            <div class="auth-benefits">
+                <span>Suivi statut</span>
+                <span>Fichiers centralises</span>
+                <span>Commandes rapides</span>
+            </div>
+        </div>
+        <div class="account-card auth-card">
+            <p class="eyebrow">Connexion</p>
+            <h1>Bon retour</h1>
+            <p class="account-muted">Connectez-vous pour continuer votre commande ou suivre une production en cours.</p>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                <div class="form-error">{{ form.non_field_errors }}</div>
+                {% endif %}
+                {% for field in form %}
+                <label>
+                    <span>{{ field.label }}</span>
+                    {{ field }}
+                    {% for error in field.errors %}<small>{{ error }}</small>{% endfor %}
+                </label>
+                {% endfor %}
+                <button class="button button-primary" type="submit">Se connecter</button>
+            </form>
+            <p class="account-switch">Pas encore de compte ? <a href="{% url 'accounts:register' %}">Creer un compte</a></p>
+        </div>
+    </div>
+</section>
+{%endblock%}

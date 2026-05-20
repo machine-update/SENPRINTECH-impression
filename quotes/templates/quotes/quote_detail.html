@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{%block title%}Devis #{{ quote.id }} - SenPrinTech{%endblock%}
+
+{%block content%}
+<section class="account-page">
+    <div class="section-inner">
+        <div class="account-dashboard-hero">
+            <div>
+                <p class="eyebrow">Devis #{{ quote.id }}</p>
+                <h1>{{ quote.get_status_display }}</h1>
+                <p>{{ quote.company_name }} - {{ quote.product_type }} - cree le {{ quote.created_at|date:"d/m/Y H:i" }}</p>
+            </div>
+            <a href="{% url 'accounts:quote_list' %}" class="button button-secondary-dark">Retour aux devis</a>
+        </div>
+        <div class="account-grid">
+            <div class="account-card">
+                <h3>Entreprise</h3>
+                <p class="account-muted">{{ quote.company_name }}</p>
+                <p class="account-muted">{{ quote.contact_name }}</p>
+                <p class="account-muted">{{ quote.email }} - {{ quote.phone }}</p>
+            </div>
+            <div class="account-card">
+                <h3>Projet</h3>
+                <p class="account-muted">Produit : {{ quote.product_type }}</p>
+                <p class="account-muted">Quantite : {{ quote.desired_quantity }}</p>
+                <p class="account-muted">Delai : {{ quote.desired_deadline }}</p>
+                {% if quote.estimated_budget %}<p class="account-muted">Budget : {{ quote.estimated_budget }} FCFA</p>{% endif %}
+                {% if quote.uploaded_file %}<p class="cart-upload"><strong>Fichier:</strong> <a href="{{ quote.uploaded_file.url }}" target="_blank" rel="noopener">{{ quote.uploaded_file.name }}</a></p>{% endif %}
+            </div>
+        </div>
+        <div class="account-card quote-message-card">
+            <h3>Message</h3>
+            <p class="account-muted">{{ quote.message }}</p>
+        </div>
+    </div>
+</section>
+{%endblock%}
