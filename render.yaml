@@ -1,0 +1,60 @@
+services:
+  - type: web
+    name: senprintech
+    runtime: python
+    plan: starter
+    buildCommand: "bash build.sh"
+    startCommand: "gunicorn ecommercesite.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.4
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com"
+      - key: WEB_CONCURRENCY
+        value: "4"
+      - key: SECURE_SSL_REDIRECT
+        value: "True"
+      - key: SESSION_COOKIE_SECURE
+        value: "True"
+      - key: CSRF_COOKIE_SECURE
+        value: "True"
+      - key: SERVE_MEDIA_FILES
+        value: "True"
+      - key: MEDIA_ROOT
+        value: "/var/data/mediafiles"
+      - key: EMAIL_BACKEND
+        value: "django.core.mail.backends.smtp.EmailBackend"
+      - key: EMAIL_HOST
+        value: "smtp.gmail.com"
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "true"
+      - key: EMAIL_USE_SSL
+        value: "false"
+      - key: DEFAULT_FROM_EMAIL
+        value: "SenPrinTech <papeaboumbaye@gmail.com>"
+      - key: QUOTE_ADMIN_EMAIL
+        value: "papeaboumbaye@gmail.com"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: senprintech-db
+          property: connectionString
+    disk:
+      name: senprintech-media
+      mountPath: /var/data
+      sizeGB: 1
+
+databases:
+  - name: senprintech-db
+    plan: starter
