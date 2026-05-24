@@ -1,6 +1,8 @@
 from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
 class CustomerRegistrationForm(UserCreationForm):
@@ -39,13 +41,38 @@ class CustomerRegistrationForm(UserCreationForm):
 
 
 class CustomerLoginForm(AuthenticationForm):
-    username = forms.CharField(label="Nom d'utilisateur")
+    username = forms.CharField(label="Email ou nom d'utilisateur")
 
     def __init__(self, request=None, *args, **kwargs):
         super().__init__(request, *args, **kwargs)
         self.fields["username"].widget.attrs.update(
-            {"class": "auth-input", "placeholder": "Votre nom d'utilisateur"}
+            {"class": "auth-input", "placeholder": "Email ou nom d'utilisateur"}
         )
         self.fields["password"].widget.attrs.update(
             {"class": "auth-input", "placeholder": "Votre mot de passe"}
         )
+
+    def clean(self):
+        username_or_email = self.cleaned_data.get("username")
+        password = self.cleaned_data.get("password")
+
+        if username_or_email and password:
+            username = username_or_email
+            if "@" in username_or_email:
+                user = User.objects.filter(email__iexact=username_or_email).first()
+                if user:
+                    username = user.get_username()
+
+            self.user_cache = authenticate(
+                self.request,
+                username=username,
+                password=password,
+            )
+            if self.user_cache is None:
+                raise ValidationError(
+                    "Identifiants incorrects. Vérifiez votre email, nom d'utilisateur ou mot de passe.",
+                    code="invalid_login",
+                )
+            self.confirm_login_allowed(self.user_cache)
+
+        return self.cleaned_data

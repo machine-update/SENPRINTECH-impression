@@ -18,7 +18,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, "Votre compte SenPrinTech a ete cree.")
+            messages.success(request, "Votre compte SenPrinTech a été créé.")
             return redirect(request.GET.get("next") or "accounts:account_home")
     else:
         form = CustomerRegistrationForm()
@@ -34,7 +34,7 @@ def login_view(request):
         form = CustomerLoginForm(request, data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            messages.success(request, "Connexion reussie.")
+            messages.success(request, "Connexion réussie.")
             return redirect(request.GET.get("next") or "accounts:account_home")
     else:
         form = CustomerLoginForm()
@@ -44,7 +44,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    messages.success(request, "Vous etes deconnecte.")
+    messages.success(request, "Vous êtes déconnecté.")
     return redirect("products:product_list")
 
 
