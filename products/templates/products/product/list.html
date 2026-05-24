@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{%block title%}SenPrinTech - Impression en ligne{%endblock%}
+{% block title %}SenPrinTech - Impression en ligne{% endblock %}
 
-{%block content%}
+{% block content %}
 
 <section class="hero">
     <div class="hero-inner">
@@ -14,17 +14,23 @@
                 <a href="#catalogue" class="button button-primary">Voir les produits</a>
                 <a href="{% url 'quotes:enterprise_quote' %}" class="button button-secondary">Demander un devis</a>
             </div>
+            <div class="hero-points">
+                <span>Impression professionnelle</span>
+                <span>Commande simple</span>
+                <span>Support WhatsApp</span>
+            </div>
         </div>
+
         <div class="hero-media" aria-label="Supports imprimes SenPrinTech">
             <div class="product-collage">
                 <figure class="collage-item collage-flyer">
-                    <img src="/media/products/FLYERS.png" alt="Flyers imprimes SenPrinTech">
+                    <img src="/media/products/flyers-hd.png" alt="Flyers imprimes SenPrinTech">
                 </figure>
                 <figure class="collage-item collage-card">
-                    <img src="/media/products/cartevisite.png" alt="Cartes de visite SenPrinTech">
+                    <img src="/media/products/business-cards-hd.png" alt="Cartes de visite SenPrinTech">
                 </figure>
                 <figure class="collage-item collage-shirt">
-                    <img src="/media/products/T-Shirt.png" alt="T-shirt personnalise SenPrinTech">
+                    <img src="/media/products/tshirts-hd.png" alt="T-shirt personnalise SenPrinTech">
                 </figure>
             </div>
         </div>
@@ -38,14 +44,17 @@
                 <p class="eyebrow">Categories</p>
                 <h2>Choisissez votre support</h2>
             </div>
-            <a href="{% url 'products:product_list'%}" class="text-link">Tous les produits</a>
+            <a href="{% url 'products:product_list' %}" class="text-link">Tous les produits</a>
         </div>
+
         <div class="category-list">
-            {%for category in categories%}
+            {% for category in categories %}
             <a href="{% url 'products:product_list_by_category' category.slug %}" class="category-pill {% if category.slug == request.resolver_match.kwargs.category_slug %}is-active{% endif %}">
-                {{category.name}}
+                {{ category.name }}
             </a>
-            {%endfor%}
+            {% empty %}
+            <span class="category-pill">Categories bientot disponibles</span>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -54,41 +63,43 @@
     <div class="section-inner">
         <div class="section-heading">
             <div>
-                {%if category%}
+                {% if category %}
                 <p class="eyebrow">Selection</p>
-                <h2>{{category.name}}</h2>
-                {%else%}
+                <h2>{{ category.name }}</h2>
+                {% else %}
                 <p class="eyebrow">Produits populaires</p>
                 <h2>Les essentiels SenPrinTech</h2>
-                {%endif%}
+                {% endif %}
             </div>
             <p class="section-note">Des supports prets pour vos campagnes, boutiques, equipes et evenements.</p>
         </div>
+
         <div class="product-grid">
             {% for product in products %}
             <a href="{% url 'products:product_detail' product.id product.slug %}" class="product-card">
                 <div class="product-image">
                     {% if product.image %}
-                    <img src="{{product.image.url}}" alt="{{product.name}}">
-                    {%else%}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
                     <div class="image-placeholder">Image bientot disponible</div>
-                    {%endif%}
+                    {% endif %}
                 </div>
+
                 <div class="product-content">
-                    <p class="product-category">{{product.category.name}}</p>
-                    <h3>{{product.name}}</h3>
-                    <p class="product-description">{{product.description}}</p>
+                    <p class="product-category">{{ product.category.name }}</p>
+                    <h3>{{ product.name }}</h3>
+                    <p class="product-description">{{ product.description|truncatechars:110 }}</p>
                     <div class="product-bottom">
-                        <p class="product-price">{{product.price}} FCFA</p>
-                        <span class="product-cta">Voir</span>
+                        <p class="product-price">{{ product.price }} FCFA</p>
+                        <span class="product-cta">Personnaliser</span>
                     </div>
                 </div>
             </a>
-            {%empty%}
+            {% empty %}
             <div class="empty-state">
-                Aucun produit disponible pour le moment. Lancez la commande de seed pour ajouter les produits test SenPrinTech.
+                Aucun produit disponible pour le moment.
             </div>
-            {%endfor%}
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -100,8 +111,9 @@
                 <p class="eyebrow">Services impression</p>
                 <h2>Des solutions pour particuliers et entreprises</h2>
             </div>
-            <p class="section-note">Une base simple pour vendre en ligne aujourd'hui, et evoluer demain vers des options plus avancees.</p>
+            <p class="section-note">Une base simple pour commander en ligne aujourd'hui, avec accompagnement si votre fichier n'est pas encore pret.</p>
         </div>
+
         <div class="service-grid">
             <article class="service-card">
                 <span>01</span>
@@ -116,7 +128,7 @@
             <article class="service-card">
                 <span>03</span>
                 <h3>Impression entreprise</h3>
-                <p>Commandes recurrentes, supports commerciaux, packaging leger et accompagnement sur les fichiers.</p>
+                <p>Commandes recurrentes, supports commerciaux, papier entete et accompagnement sur les fichiers.</p>
             </article>
         </div>
     </div>
@@ -130,7 +142,7 @@
         </div>
         <div class="process-list">
             <p><strong>1. Produit</strong> Choisissez le support adapte a votre besoin.</p>
-            <p><strong>2. Fichier</strong> Preparez votre design ou demandez un accompagnement.</p>
+            <p><strong>2. Fichier</strong> Ajoutez votre design si vous l'avez, ou commandez sans fichier.</p>
             <p><strong>3. Production</strong> Nous preparons l'impression et confirmons les details.</p>
         </div>
     </div>
@@ -140,7 +152,7 @@
     <div class="section-inner about-inner">
         <p class="eyebrow">A propos</p>
         <h2>SenPrinTech construit une experience d'impression en ligne claire, rapide et fiable.</h2>
-        <p>Cette phase pose les bases : catalogue administrable, panier fonctionnel, vitrine responsive et pages produit propres. Les fonctionnalites avancees viendront ensuite sans casser l'architecture.</p>
+        <p>Catalogue administrable, panier fonctionnel, vitrine responsive et pages produit propres. Vous pouvez commander vos supports et finaliser avec l'equipe en toute simplicite.</p>
     </div>
 </section>
 
@@ -158,6 +170,7 @@
                 </a>
             </div>
         </div>
+
         <form action="{% url 'products:contact_submit' %}" method="post" class="contact-form" novalidate>
             {% csrf_token %}
             <div class="form-grid">
@@ -172,6 +185,7 @@
                     {% for error in contact_form.email.errors %}<small>{{ error }}</small>{% endfor %}
                 </label>
             </div>
+
             <div class="form-grid">
                 <label>
                     <span>{{ contact_form.phone.label }}</span>
@@ -184,14 +198,16 @@
                     {% for error in contact_form.project_type.errors %}<small>{{ error }}</small>{% endfor %}
                 </label>
             </div>
+
             <label>
                 <span>{{ contact_form.message.label }}</span>
                 {{ contact_form.message }}
                 {% for error in contact_form.message.errors %}<small>{{ error }}</small>{% endfor %}
             </label>
+
             <button type="submit" class="button button-primary">Envoyer la demande</button>
         </form>
     </div>
 </section>
 
-{%endblock%}
+{% endblock %}

@@ -24,8 +24,9 @@
                 <h3>Commandes recentes</h3>
                 {% for order in recent_orders %}
                 <a class="order-row" href="{% url 'accounts:order_detail' order.id %}">
-                    <span>Commande #{{ order.id }}</span>
+                    <span>Commande {{ order.order_number }}</span>
                     <strong class="status-pill">{{ order.get_status_display }}</strong>
+                    <strong class="status-pill payment-status-pill">{{ order.get_payment_status_display }}</strong>
                 </a>
                 {% empty %}
                 <p class="account-muted">Aucune commande pour le moment.</p>

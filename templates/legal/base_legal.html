@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{% block legal_title %}Informations légales{% endblock %} - SenPrinTech{% endblock %}
+
+{% block content %}
+<section class="legal-page">
+    <div class="legal-hero">
+        <p class="eyebrow">SenPrinTech</p>
+        <h1>{% block legal_heading %}{% endblock %}</h1>
+        <p>{% block legal_intro %}{% endblock %}</p>
+    </div>
+
+    <div class="legal-layout">
+        <aside class="legal-nav">
+            <a href="{% url 'privacy_policy' %}">Confidentialité</a>
+            <a href="{% url 'terms' %}">CGU</a>
+            <a href="{% url 'sales_terms' %}">Conditions de vente</a>
+            <a href="{% url 'delivery_policy' %}">Livraison</a>
+            <a href="{% url 'returns_policy' %}">Retours & remboursements</a>
+            <a href="{% url 'legal_notice' %}">Mentions légales</a>
+            <a href="{% url 'faq' %}">FAQ</a>
+        </aside>
+        <article class="legal-content">
+            {% block legal_content %}{% endblock %}
+        </article>
+    </div>
+</section>
+{% endblock %}

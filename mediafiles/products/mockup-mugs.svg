@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <rect width="900" height="620" fill="#efede8"/>
+  <ellipse cx="333" cy="482" rx="145" ry="28" fill="#d7d1c5"/>
+  <ellipse cx="610" cy="482" rx="145" ry="28" fill="#d7d1c5"/>
+  <rect x="230" y="175" width="210" height="300" rx="42" fill="#111"/>
+  <ellipse cx="335" cy="176" rx="105" ry="28" fill="#242424"/>
+  <path d="M438 245 C525 248 525 390 438 393" fill="none" stroke="#111" stroke-width="44"/>
+  <rect x="505" y="175" width="210" height="300" rx="42" fill="#fff" stroke="#ddd"/>
+  <ellipse cx="610" cy="176" rx="105" ry="28" fill="#fff" stroke="#ddd"/>
+  <path d="M713 245 C800 248 800 390 713 393" fill="none" stroke="#ddd" stroke-width="44"/>
+  <text x="273" y="325" fill="#c8a24a" font-family="Arial" font-size="31" font-weight="700">SenPrinTech</text>
+  <text x="552" y="325" fill="#111" font-family="Arial" font-size="31" font-weight="700">SenPrinTech</text>
+</svg>

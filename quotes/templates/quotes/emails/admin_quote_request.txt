@@ -1,0 +1,19 @@
+Nouvelle demande de devis entreprise SenPrinTech
+
+Entreprise : {{ quote.company_name }}
+Contact : {{ quote.contact_name }}
+Email : {{ quote.email }}
+Telephone : {{ quote.phone }}
+
+Produit : {{ quote.product_type }}
+Quantite souhaitee : {{ quote.desired_quantity }}
+Delai souhaite : {{ quote.desired_deadline }}
+{% if quote.estimated_budget %}Budget estime : {{ quote.estimated_budget }} FCFA{% else %}Budget estime : Non indique{% endif %}
+
+Message :
+{{ quote.message }}
+
+{% if file_url %}Fichier joint : {{ file_url }}{% else %}Fichier joint : Aucun fichier fourni{% endif %}
+
+Statut : {{ quote.get_status_display }}
+Date : {{ quote.created_at|date:"d/m/Y H:i" }}

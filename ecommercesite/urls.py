@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from ecommercesite.admin_dashboard import install_admin_dashboard
+from ecommercesite import views
 
 install_admin_dashboard(admin.site)
 
@@ -26,6 +27,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("compte/", include("accounts.urls")),
     path("", include("quotes.urls")),
+    path("confidentialite/", views.legal_page, {"page": "privacy"}, name="privacy_policy"),
+    path("conditions-utilisation/", views.legal_page, {"page": "terms"}, name="terms"),
+    path("conditions-vente/", views.legal_page, {"page": "sales"}, name="sales_terms"),
+    path("livraison/", views.legal_page, {"page": "delivery"}, name="delivery_policy"),
+    path("retours-remboursements/", views.legal_page, {"page": "returns"}, name="returns_policy"),
+    path("mentions-legales/", views.legal_page, {"page": "legal_notice"}, name="legal_notice"),
+    path("faq/", views.legal_page, {"page": "faq"}, name="faq"),
     path("cart/", include('cart.urls')),
     path("orders/", include("orders.urls")),
     path('', include('products.urls', namespace='products')),

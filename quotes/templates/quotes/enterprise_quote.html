@@ -4,24 +4,33 @@
 {%block content%}
 <section class="quote-page">
     <div class="section-inner quote-hero">
-        <div>
+        <div class="quote-hero-copy">
             <p class="eyebrow">Impression Entreprise</p>
-            <h1>Des volumes, des delais, une finition pro.</h1>
-            <p>Demandez un devis pour vos campagnes, supports commerciaux, goodies, packaging leger ou impressions personnalisees en volume.</p>
+            <h1>Des impressions en volume, livrees avec une finition pro.</h1>
+            <p>Supports commerciaux, brochures, packaging leger et impressions personnalisees pour vos campagnes d'entreprise.</p>
+            <div class="quote-hero-actions">
+                <a href="#quote-form" class="button button-primary">Demander un devis</a>
+                <a href="#quote-form" class="button button-secondary-dark">Envoyer mes fichiers</a>
+            </div>
             <div class="auth-benefits">
                 <span>Devis personnalise</span>
                 <span>Fichiers logo</span>
                 <span>Suivi admin</span>
             </div>
         </div>
-        <div class="quote-stat-card">
-            <strong>24-48h</strong>
-            <span>pour une premiere reponse selon la complexite du besoin</span>
+
+        <div class="quote-hero-visual">
+            <img src="/media/products/business-cards-hd.png" alt="Supports premium imprimes pour commandes entreprise">
+            <div class="quote-stat-card">
+                <span class="quote-stat-label">Reponse estimee</span>
+                <strong>24-48h</strong>
+                <span>Premiere reponse selon la complexite du besoin.</span>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="quote-form-section">
+<section id="quote-form" class="quote-form-section">
     <div class="section-inner account-layout">
         <form method="post" enctype="multipart/form-data" class="account-card auth-form quote-form-card">
             {% csrf_token %}

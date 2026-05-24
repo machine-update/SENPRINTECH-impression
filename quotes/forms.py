@@ -28,7 +28,7 @@ class QuoteRequestForm(forms.ModelForm):
             "desired_deadline": "Delai souhaite",
             "estimated_budget": "Budget estime optionnel",
             "message": "Message",
-            "uploaded_file": "Fichier/logo",
+            "uploaded_file": "Joindre un fichier (facultatif)",
         }
         widgets = {
             "company_name": forms.TextInput(attrs={"placeholder": "Nom de votre entreprise"}),
@@ -50,9 +50,11 @@ class QuoteRequestForm(forms.ModelForm):
             "desired_deadline": forms.TextInput(attrs={"placeholder": "Ex: sous 7 jours"}),
             "estimated_budget": forms.NumberInput(attrs={"placeholder": "Ex: 250000", "min": 0}),
             "message": forms.Textarea(attrs={"rows": 5, "placeholder": "Detaillez le besoin, supports, formats, finitions..."}),
+            "uploaded_file": forms.FileInput(attrs={"accept": ".pdf,.ai,.psd,.doc,.docx,.jpg,.jpeg,.png"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["uploaded_file"].required = False
         for field in self.fields.values():
             field.widget.attrs["class"] = "auth-input"

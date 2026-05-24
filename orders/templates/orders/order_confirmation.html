@@ -1,16 +1,45 @@
 {% extends "base.html" %}
-{%block title%}Commande confirmee - SenPrinTech{%endblock%}
+{%block title%}Finaliser votre paiement - SenPrinTech{%endblock%}
 
 {%block content%}
-<section class="cart-page">
+<section class="cart-page payment-finalize-page">
 <div class="section-inner">
-    <div class="confirmation-hero">
-        <p class="eyebrow">Commande confirmee</p>
-        <h2>Merci, votre commande #{{ order.id }} est enregistree.</h2>
-        <p>Nous avons conserve vos produits, options et informations client. Le paiement est actuellement {{ order.get_payment_status_display|lower }}.</p>
+    <div class="checkout-steps" aria-label="Progression commande">
+        <span>1. Panier</span>
+        <span>2. Informations</span>
+        <span>3. Confirmation</span>
+        <span class="is-active">4. Paiement WhatsApp</span>
+    </div>
+    <div class="payment-finalize-hero">
+        <p class="eyebrow">Paiement assiste</p>
+        <h1>Finaliser votre paiement</h1>
+        <p>Votre commande {{ order.order_number }} est bien creee. Envoyez la demande de paiement sur WhatsApp : notre equipe vous confirme rapidement les instructions Wave ou Orange Money.</p>
+        <div class="payment-key-grid">
+            <div>
+                <span>Commande</span>
+                <strong>{{ order.order_number }}</strong>
+            </div>
+            <div>
+                <span>Montant total</span>
+                <strong>{{ order.get_total_cost }} FCFA</strong>
+            </div>
+            <div>
+                <span>Methode choisie</span>
+                <strong>{{ order.get_payment_method_display }}</strong>
+            </div>
+            <div>
+                <span>Statut paiement</span>
+                <strong>{{ order.get_payment_status_display }}</strong>
+            </div>
+        </div>
         <div class="hero-actions">
-            <a href="{{ whatsapp_order_url }}" class="button button-primary" target="_blank" rel="noopener">Envoyer ma commande sur WhatsApp</a>
+            <a href="{{ whatsapp_order_url }}" class="button button-primary whatsapp-pay-button" target="_blank" rel="noopener">Payer sur WhatsApp</a>
             <a href="{% url 'accounts:order_detail' order.id %}" class="button button-secondary-dark">Voir dans mon compte</a>
+        </div>
+        <div class="checkout-trust-list is-on-dark">
+            <p>Paiement non debite automatiquement</p>
+            <p>Confirmation humaine par SenPrinTech</p>
+            <p>Support disponible sur WhatsApp</p>
         </div>
     </div>
 
@@ -39,6 +68,8 @@
                         {% endif %}
                         {% if item.uploaded_file %}
                         <p class="cart-upload"><strong>Fichier:</strong> <a href="{{ item.uploaded_file.url }}" target="_blank" rel="noopener">{{ item.uploaded_file.name }}</a></p>
+                        {% else %}
+                        <p class="cart-upload"><strong>Fichier:</strong> Aucun fichier fourni</p>
                         {% endif %}
                         <div class="cart-price-grid">
                             <p><span>Quantite</span><strong>{{ item.quantity }}</strong></p>
@@ -60,9 +91,10 @@
                 <p><span>Adresse</span><strong>{{ order.address }}</strong></p>
                 <p><span>Ville</span><strong>{{ order.city|default:"-" }}</strong></p>
                 <p><span>Livraison</span><strong>{{ order.get_delivery_method_display }}</strong></p>
+                <p><span>Methode</span><strong>{{ order.get_payment_method_display }}</strong></p>
                 <p><span>Paiement</span><strong>{{ order.get_payment_status_display }}</strong></p>
                 {% if order.proof_file %}
-                <p><span>BAT / aperçu</span><strong><a href="{{ order.proof_file.url }}" target="_blank" rel="noopener">Voir le fichier</a></strong></p>
+                <p><span>BAT / apercu</span><strong><a href="{{ order.proof_file.url }}" target="_blank" rel="noopener">Voir le fichier</a></strong></p>
                 {% endif %}
             </div>
             {% if order.notes %}

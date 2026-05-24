@@ -15,9 +15,11 @@
         <div class="order-table premium-order-table">
             {% for order in orders %}
             <a class="order-row" href="{% url 'accounts:order_detail' order.id %}">
-                <span>Commande #{{ order.id }}</span>
+                <span>Commande {{ order.order_number }}</span>
                 <span>{{ order.created_at|date:"d/m/Y H:i" }}</span>
                 <strong class="status-pill">{{ order.get_status_display }}</strong>
+                <strong class="status-pill payment-status-pill">{{ order.get_payment_status_display }}</strong>
+                <span>{{ order.get_payment_method_display }}</span>
                 <span>{{ order.get_total_cost }} FCFA</span>
             </a>
             {% empty %}

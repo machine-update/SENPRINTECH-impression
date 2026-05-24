@@ -7,12 +7,15 @@ from quotes.models import QuoteRequest
 def build_admin_dashboard_context():
     orders = Order.objects.prefetch_related("items").order_by("-created_at")
     quotes = QuoteRequest.objects.order_by("-created_at")
-    total_sales = sum((order.get_total_cost() for order in orders), Decimal("0"))
+    paid_orders = orders.filter(payment_status=Order.PAYMENT_PAID)
+    total_sales = sum((order.get_total_cost() for order in paid_orders), Decimal("0"))
 
     return {
         "sp_dashboard": {
             "orders_total": orders.count(),
             "orders_pending": orders.filter(status=Order.PENDING).count(),
+            "payments_pending": orders.filter(payment_status=Order.PAYMENT_PENDING).count(),
+            "payments_paid": paid_orders.count(),
             "orders_urgent": orders.filter(priority=Order.PRIORITY_URGENT).count(),
             "total_sales": total_sales,
             "quotes_pending": quotes.filter(status__in=[QuoteRequest.NEW, QuoteRequest.ANALYZING]).count(),

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <rect width="900" height="620" fill="#f7f7f7"/>
+  <rect x="160" y="115" width="530" height="380" rx="18" fill="#fff" stroke="#ddd" transform="rotate(-4 425 305)"/>
+  <g fill="#111">
+    <circle cx="290" cy="230" r="55"/><circle cx="450" cy="210" r="55"/><circle cx="610" cy="250" r="55"/>
+    <circle cx="340" cy="375" r="55"/><circle cx="510" cy="360" r="55"/><circle cx="665" cy="400" r="55"/>
+  </g>
+  <g fill="#c8a24a" font-family="Arial" font-size="18" font-weight="700" text-anchor="middle">
+    <text x="290" y="236">SPT</text><text x="450" y="216">SPT</text><text x="610" y="256">SPT</text>
+    <text x="340" y="381">SPT</text><text x="510" y="366">SPT</text><text x="665" y="406">SPT</text>
+  </g>
+</svg>

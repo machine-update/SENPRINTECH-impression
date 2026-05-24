@@ -1,6 +1,8 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
+
 from products.models import Product
+
 
 class Order(models.Model):
     PENDING = "pending"
@@ -40,8 +42,16 @@ class Order(models.Model):
     PAYMENT_STATUS_CHOICES = [
         (PAYMENT_PENDING, "En attente"),
         (PAYMENT_PAID, "Payé"),
-        (PAYMENT_FAILED, "Échec"),
+        (PAYMENT_FAILED, "Refusé"),
         (PAYMENT_REFUNDED, "Remboursé"),
+    ]
+    PAYMENT_METHOD_WAVE = "wave"
+    PAYMENT_METHOD_ORANGE_MONEY = "orange_money"
+    PAYMENT_METHOD_CARD = "card"
+    PAYMENT_METHOD_CHOICES = [
+        (PAYMENT_METHOD_WAVE, "Wave"),
+        (PAYMENT_METHOD_ORANGE_MONEY, "Orange Money"),
+        (PAYMENT_METHOD_CARD, "Carte bancaire (bientot)"),
     ]
     DELIVERY_PICKUP = "pickup"
     DELIVERY_DELIVERY = "delivery"
@@ -57,6 +67,7 @@ class Order(models.Model):
         blank=True,
         null=True,
     )
+    order_number = models.CharField(max_length=20, unique=True, blank=True, null=True, editable=False)
     full_name = models.CharField(max_length=250)
     phone = models.CharField(max_length=40, blank=True)
     email = models.EmailField()
@@ -85,6 +96,11 @@ class Order(models.Model):
         choices=PAYMENT_STATUS_CHOICES,
         default=PAYMENT_PENDING,
     )
+    payment_method = models.CharField(
+        max_length=30,
+        choices=PAYMENT_METHOD_CHOICES,
+        default=PAYMENT_METHOD_WAVE,
+    )
     payment_provider = models.CharField(max_length=40, blank=True)
     payment_reference = models.CharField(max_length=120, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -93,6 +109,10 @@ class Order(models.Model):
 
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
+
+    def build_order_number(self):
+        year = self.created_at.year if self.created_at else 2026
+        return f"SPT-{year}-{self.pk:06d}"
 
     def save(self, *args, **kwargs):
         previous_status = None
@@ -103,7 +123,15 @@ class Order(models.Model):
                 .first()
             )
         self.paid = self.payment_status == self.PAYMENT_PAID
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None and "payment_status" in update_fields:
+            kwargs["update_fields"] = set(update_fields) | {"paid"}
         super().save(*args, **kwargs)
+        if not self.order_number:
+            self.order_number = self.build_order_number()
+            type(self).objects.filter(pk=self.pk, order_number__isnull=True).update(
+                order_number=self.order_number
+            )
         if previous_status is None:
             OrderStatusHistory.objects.create(order=self, previous_status="", new_status=self.status)
         elif previous_status != self.status:
@@ -112,6 +140,7 @@ class Order(models.Model):
                 previous_status=previous_status,
                 new_status=self.status,
             )
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
@@ -123,7 +152,7 @@ class OrderItem(models.Model):
 
     def get_unit_price(self):
         return self.price
-    
+
     def get_cost(self):
         return self.get_unit_price() * self.quantity
 

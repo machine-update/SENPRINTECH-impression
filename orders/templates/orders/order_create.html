@@ -3,13 +3,28 @@
 
 {%block content%}
 <section class="account-page">
-    <div class="section-inner checkout-layout">
+    <div class="section-inner">
+    <div class="checkout-steps" aria-label="Progression commande">
+        <span>1. Panier</span>
+        <span class="is-active">2. Informations</span>
+        <span>3. Confirmation</span>
+        <span>4. Paiement WhatsApp</span>
+    </div>
+    <div class="checkout-layout">
         <div class="account-card checkout-card">
-            <p class="eyebrow">Commande</p>
+            <p class="eyebrow">Commande securisee</p>
             <h1>Finaliser votre commande</h1>
-            <p class="account-muted">Renseignez vos informations. Le paiement reste en attente pour cette phase.</p>
+            <p class="account-muted">Verifiez vos informations avant validation. La commande sera creee d'abord, puis le paiement sera finalise avec SenPrinTech sur WhatsApp.</p>
             <form method="post" class="auth-form">
                 {% csrf_token %}
+                <div class="checkout-form-section">
+                    <div class="checkout-section-heading">
+                        <span>1</span>
+                        <div>
+                            <h2>Vos informations</h2>
+                            <p>Ces informations permettent de confirmer la commande et la livraison.</p>
+                        </div>
+                    </div>
                 <div class="auth-grid">
                     <label>
                         <span>{{ form.full_name.label }}</span>
@@ -44,21 +59,61 @@
                     {{ form.delivery_method }}
                     {% for error in form.delivery_method.errors %}<small>{{ error }}</small>{% endfor %}
                 </label>
+                </div>
+                <div class="checkout-form-section">
+                    <div class="checkout-section-heading">
+                        <span>2</span>
+                        <div>
+                            <h2>Methode paiement</h2>
+                            <p>Choisissez Wave ou Orange Money. Le paiement est confirme par WhatsApp apres creation.</p>
+                        </div>
+                    </div>
+                <fieldset class="payment-method-field">
+                    <legend>{{ form.payment_method.label }}</legend>
+                    <div class="payment-method-grid">
+                        {% for choice in form.payment_method %}
+                        <label class="payment-method-card{% if choice.choice_value == 'card' %} is-disabled{% endif %}">
+                            {{ choice.tag }}
+                            <span>
+                                <strong>{{ choice.choice_label }}</strong>
+                                {% if choice.choice_value == 'wave' %}
+                                <small>Assistance WhatsApp pour confirmer votre transfert Wave.</small>
+                                {% elif choice.choice_value == 'orange_money' %}
+                                <small>Assistance WhatsApp pour finaliser via Orange Money.</small>
+                                {% else %}
+                                <small>Integration bancaire preparee pour une prochaine version.</small>
+                                {% endif %}
+                            </span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% for error in form.payment_method.errors %}<small>{{ error }}</small>{% endfor %}
+                </fieldset>
+                </div>
+                <div class="checkout-form-section">
+                    <div class="checkout-section-heading">
+                        <span>3</span>
+                        <div>
+                            <h2>Verification finale</h2>
+                            <p>Ajoutez une precision si besoin, puis creez la commande.</p>
+                        </div>
+                    </div>
                 <label>
                     <span>{{ form.notes.label }}</span>
                     {{ form.notes }}
                     {% for error in form.notes.errors %}<small>{{ error }}</small>{% endfor %}
                 </label>
-                <div class="payment-placeholder">
-                    <span>Paiement</span>
-                    <strong>En attente</strong>
-                    <p>Stripe ou paiement manuel pourra etre branche ici sans changer le tunnel.</p>
+                <div class="payment-assurance">
+                    <strong>Paiement assiste, statut initial : En attente</strong>
+                    <p>Apres validation, vous recevrez un bouton WhatsApp avec le montant, le numero de commande et la methode choisie.</p>
                 </div>
-                <button class="button button-primary" type="submit">Confirmer la commande</button>
+                <button class="button button-primary checkout-main-cta" type="submit">Finaliser la commande</button>
+                </div>
             </form>
         </div>
         <aside class="order-summary-card checkout-summary">
-            <h2>Resume panier</h2>
+            <p class="eyebrow">Resume commande</p>
+            <h2>Votre panier</h2>
             {% for item in cart.items.all %}
             <div class="mini-order">
                 <strong>{{ item.product.name }}</strong>
@@ -76,8 +131,9 @@
                 <p>Total</p>
                 <strong>{{ cart.get_total_price }} FCFA</strong>
             </div>
-            <p class="checkout-note">Vous pourrez envoyer la commande sur WhatsApp apres confirmation.</p>
+            <p class="checkout-note">Le paiement sera finalise manuellement sur WhatsApp avec SenPrinTech.</p>
         </aside>
+    </div>
     </div>
 </section>
 {%endblock%}

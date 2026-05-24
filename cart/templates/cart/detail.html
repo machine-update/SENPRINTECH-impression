@@ -9,11 +9,18 @@
     <div>
         <p class="eyebrow">Panier</p>
         <h2>Verifiez votre commande</h2>
+        <p class="checkout-support-text">Controlez vos articles avant de continuer. Aucun paiement n'est effectue a cette etape.</p>
     </div>
     <a href="{% url 'products:product_list'%}#catalogue" class="text-link">Continuer vos achats</a>
 </div>
 
 {%if cart %}
+<div class="checkout-steps" aria-label="Progression commande">
+    <span class="is-active">1. Panier</span>
+    <span>2. Informations</span>
+    <span>3. Confirmation</span>
+    <span>4. Paiement WhatsApp</span>
+</div>
 <div class="checkout-layout">
     <ul class="cart-list">
         {%for item in cart.items.all %}
@@ -35,9 +42,18 @@
                 {% endif %}
                 {% if item.uploaded_file %}
                 <p class="cart-upload"><strong>Fichier:</strong> <a href="{{ item.uploaded_file.url }}" target="_blank" rel="noopener">{{ item.uploaded_file.name }}</a></p>
+                {% else %}
+                <p class="cart-upload"><strong>Fichier:</strong> Aucun fichier fourni</p>
                 {% endif %}
                 <div class="cart-price-grid">
-                    <p><span>Quantite</span><strong>{{item.quantity}}</strong></p>
+                    <form action="{% url 'cart:update_item' item.id %}" method="post" class="cart-quantity-update">
+                        {% csrf_token %}
+                        <label>
+                            <span>Quantite</span>
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" step="1" required>
+                        </label>
+                        <button type="submit" class="remove-button">Mettre a jour</button>
+                    </form>
                     <p><span>Unitaire</span><strong>{{item.get_unit_price}} FCFA</strong></p>
                     <p><span>Total</span><strong>{{item.get_total_price}} FCFA</strong></p>
                 </div>
@@ -52,7 +68,7 @@
     </ul>
 
     <aside class="order-summary-card">
-        <p class="eyebrow">Resume</p>
+        <p class="eyebrow">Resume commande</p>
         <h3>Total panier</h3>
         <div class="summary-lines">
             {% for item in cart.items.all %}
@@ -64,9 +80,13 @@
             <strong>{{cart.get_total_price}} FCFA</strong>
         </div>
         <form action="{% url 'orders:order_create'%}" method="get">
-            <button type="submit" class="button button-primary">Finaliser la commande</button>
+            <button type="submit" class="button button-primary checkout-main-cta">Continuer la commande</button>
         </form>
-        <p class="checkout-note">Paiement non debite maintenant. Validation finale a l'etape suivante.</p>
+        <div class="checkout-trust-list">
+            <p>Paiement securise et assiste</p>
+            <p>Confirmation rapide via WhatsApp</p>
+            <p>Support client disponible</p>
+        </div>
     </aside>
 </div>
 {%else%}

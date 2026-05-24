@@ -5,6 +5,19 @@ from .models import Cart, CartItem
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 
+
+def get_session_cart(request):
+    cart_id = request.session.get("cart_id")
+    if not cart_id:
+        return None
+
+    try:
+        return Cart.objects.prefetch_related("items__product").get(id=cart_id)
+    except Cart.DoesNotExist:
+        request.session.pop("cart_id", None)
+        return None
+
+
 @require_POST
 def cart_add(request, product_id):
     cart_id = request.session.get('cart_id')
@@ -14,6 +27,7 @@ def cart_add(request, product_id):
             cart = Cart.objects.get(id=cart_id)
         except Cart.DoesNotExist:
             cart = Cart.objects.create()
+            request.session['cart_id'] = cart.id
     else:
         cart = Cart.objects.create()
         request.session['cart_id'] = cart.id
@@ -71,20 +85,41 @@ def cart_add(request, product_id):
     
     
 def cart_detail(request):
-    cart_id = request.session.get('cart_id')
-    cart=None
-    
-    if cart_id:
-        cart = get_object_or_404(Cart.objects.prefetch_related("items__product"), id=cart_id)
+    cart = get_session_cart(request)
     if not cart or not cart.items.exists():
         cart=None
     
     return render(request, "cart/detail.html", {"cart":cart})
     
+
+@require_POST
+def cart_update(request, item_id):
+    cart = get_session_cart(request)
+    if not cart:
+        return redirect("cart:cart_detail")
+
+    item = get_object_or_404(CartItem, id=item_id, cart=cart)
+
+    try:
+        quantity = int(request.POST.get("quantity", item.quantity))
+    except (TypeError, ValueError):
+        quantity = item.quantity
+
+    if quantity < 1:
+        item.delete()
+    else:
+        item.quantity = min(quantity, 99)
+        item.save(update_fields=["quantity"])
+
+    return redirect("cart:cart_detail")
+
+
 @require_POST
 def cart_remove(request, item_id):
-    cart_id = request.session.get('cart_id')
-    cart = get_object_or_404(Cart, id=cart_id)
+    cart = get_session_cart(request)
+    if not cart:
+        return redirect("cart:cart_detail")
+
     item = get_object_or_404(CartItem, id=item_id, cart=cart)
     item.delete()
     

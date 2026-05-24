@@ -68,14 +68,14 @@ class ProductConfigurationForm(forms.Form):
             elif option.input_type == option.TEXT:
                 self.fields[field_name] = forms.CharField(
                     label=option.name,
-                    required=option.required,
+                    required=False,
                     help_text=option.help_text,
                     widget=forms.Textarea(attrs={"rows": 3}),
                 )
             elif option.input_type == option.FILE:
                 self.fields[field_name] = forms.FileField(
                     label=option.name,
-                    required=option.required,
+                    required=False,
                     help_text=option.help_text,
                 )
 

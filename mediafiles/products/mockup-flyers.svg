@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <rect width="900" height="620" fill="#f5f5f5"/>
+  <rect x="165" y="110" width="230" height="340" rx="8" fill="#0f1115" transform="rotate(-12 280 280)"/>
+  <rect x="330" y="95" width="230" height="340" rx="8" fill="#fff" stroke="#ddd" transform="rotate(8 445 265)"/>
+  <rect x="500" y="140" width="230" height="340" rx="8" fill="#c8a24a" transform="rotate(16 615 310)"/>
+  <rect x="190" y="155" width="175" height="85" fill="#c8a24a"/>
+  <text x="205" y="288" fill="#fff" font-family="Arial" font-size="33" font-weight="700">FLYERS</text>
+  <text x="375" y="190" fill="#111" font-family="Arial" font-size="30" font-weight="700">Event</text>
+  <text x="375" y="230" fill="#666" font-family="Arial" font-size="20">A5 / A4 / A3</text>
+  <text x="548" y="314" fill="#111" font-family="Arial" font-size="28" font-weight="700">Promo</text>
+</svg>

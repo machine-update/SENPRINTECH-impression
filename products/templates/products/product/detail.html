@@ -37,9 +37,9 @@
                         {% endfor %}
                     </select>
                     {% elif option.input_type == "file" %}
-                    <input type="file" name="option_{{ option.id }}" {% if option.required %}required{% endif %}>
+                    <input type="file" name="option_{{ option.id }}">
                     {% elif option.input_type == "text" %}
-                    <textarea name="option_{{ option.id }}" rows="3" {% if option.required %}required{% endif %} placeholder="Texte a imprimer, consignes, details..."></textarea>
+                    <textarea name="option_{{ option.id }}" rows="3" placeholder="Texte a imprimer, consignes, details..."></textarea>
                     {% endif %}
                 </label>
                 {% endfor %}
@@ -64,7 +64,7 @@
                 <strong><span id="line-total">{{product.price}}</span> FCFA</strong>
             </div>
         </div>
-        <button type="submit" class="button button-primary">Ajouter au panier</button>
+        <button type="submit" class="button button-primary checkout-main-cta">Ajouter au panier</button>
         <a href="{{ product_whatsapp_url }}" class="button whatsapp-product-button" target="_blank" rel="noopener">
             Demander conseil sur WhatsApp
         </a>
@@ -95,10 +95,10 @@
     }
 
     function updatePreview() {
-        if (!productForm || !optionSummary) return;
+        if (!productForm) return;
 
         let price = Number(productForm.dataset.basePrice || 0);
-        optionSummary.innerHTML = '';
+        if (optionSummary) optionSummary.innerHTML = '';
 
         productForm.querySelectorAll('.option-field').forEach((field) => {
             const label = field.querySelector('span')?.textContent || '';
@@ -118,7 +118,7 @@
 
             const item = document.createElement('li');
             item.textContent = `${label}: ${value}`;
-            optionSummary.appendChild(item);
+            if (optionSummary) optionSummary.appendChild(item);
         });
 
         const quantity = Math.max(1, Number(cartQuantity?.value || 1));
@@ -131,7 +131,7 @@
     productForm?.addEventListener('input', updatePreview);
     updatePreview();
 
-    productForm.addEventListener("submit", function(event){
+    productForm?.addEventListener("submit", function(event){
         event.preventDefault();
 
         const form = event.target;

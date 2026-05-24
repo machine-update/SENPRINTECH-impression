@@ -1,7 +1,15 @@
 from django import forms
+
 from .models import Order
 
+
 class OrderCreateForm(forms.ModelForm):
+    def clean_payment_method(self):
+        payment_method = self.cleaned_data["payment_method"]
+        if payment_method == Order.PAYMENT_METHOD_CARD:
+            raise forms.ValidationError("Le paiement par carte bancaire sera disponible prochainement.")
+        return payment_method
+
     class Meta:
         model = Order
         fields = [
@@ -11,15 +19,17 @@ class OrderCreateForm(forms.ModelForm):
             "address",
             "city",
             "delivery_method",
+            "payment_method",
             "notes",
         ]
         labels = {
             "full_name": "Nom complet",
-            "phone": "Téléphone",
+            "phone": "Telephone",
             "email": "Email",
             "address": "Adresse",
             "city": "Ville",
             "delivery_method": "Mode de livraison",
+            "payment_method": "Methode de paiement",
             "notes": "Notes commande",
         }
         widgets = {
@@ -28,8 +38,11 @@ class OrderCreateForm(forms.ModelForm):
             "email": forms.EmailInput(attrs={"placeholder": "votre@email.com"}),
             "address": forms.TextInput(attrs={"placeholder": "Adresse de retrait/livraison"}),
             "city": forms.TextInput(attrs={"placeholder": "Dakar, Thies..."}),
-            "notes": forms.Textarea(attrs={
-                "rows": 4,
-                "placeholder": "Delai souhaite, details livraison, precision sur les fichiers...",
-            }),
+            "payment_method": forms.RadioSelect(),
+            "notes": forms.Textarea(
+                attrs={
+                    "rows": 4,
+                    "placeholder": "Delai souhaite, details livraison, precision sur les fichiers...",
+                }
+            ),
         }

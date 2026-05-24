@@ -7,7 +7,7 @@
         <div>
             <p>SenPrinTech</p>
             <h1>Gestion impression</h1>
-            <span>Commandes, production, devis et BAT au même endroit.</span>
+            <span>Commandes, production, devis et BAT au meme endroit.</span>
         </div>
         <a href="{% url 'admin:orders_order_changelist' %}" class="sp-admin-button">Voir les commandes</a>
     </section>
@@ -18,19 +18,23 @@
             <strong>{{ sp_dashboard.orders_total }}</strong>
         </article>
         <article>
-            <span>En attente</span>
-            <strong>{{ sp_dashboard.orders_pending }}</strong>
+            <span>Paiements en attente</span>
+            <strong>{{ sp_dashboard.payments_pending }}</strong>
+        </article>
+        <article>
+            <span>Paiements payes</span>
+            <strong>{{ sp_dashboard.payments_paid }}</strong>
         </article>
         <article>
             <span>Urgentes</span>
             <strong>{{ sp_dashboard.orders_urgent }}</strong>
         </article>
         <article>
-            <span>Total ventes</span>
+            <span>Total ventes payees</span>
             <strong>{{ sp_dashboard.total_sales }} FCFA</strong>
         </article>
         <article>
-            <span>Devis à traiter</span>
+            <span>Devis a traiter</span>
             <strong>{{ sp_dashboard.quotes_pending }}</strong>
         </article>
     </section>
@@ -38,15 +42,15 @@
     <section class="sp-admin-grid">
         <div class="sp-admin-card">
             <div class="sp-card-heading">
-                <h2>Commandes récentes</h2>
+                <h2>Commandes recentes</h2>
                 <a href="{% url 'admin:orders_order_changelist' %}">Tout voir</a>
             </div>
             <div class="sp-admin-list">
                 {% for order in sp_dashboard.recent_orders %}
                 <a href="{% url 'admin:orders_order_change' order.id %}">
-                    <span>#{{ order.id }} · {{ order.full_name }}</span>
-                    <strong>{{ order.get_status_display }}</strong>
-                    <small>{{ order.get_total_cost }} FCFA · {{ order.created_at|date:"d/m/Y H:i" }}</small>
+                    <span>{{ order.order_number }} - {{ order.full_name }}</span>
+                    <strong>{{ order.get_payment_status_display }}</strong>
+                    <small>{{ order.get_total_cost }} FCFA - {{ order.get_payment_method_display }} - {{ order.created_at|date:"d/m/Y H:i" }}</small>
                 </a>
                 {% empty %}
                 <p>Aucune commande pour le moment.</p>
@@ -56,15 +60,15 @@
 
         <div class="sp-admin-card">
             <div class="sp-card-heading">
-                <h2>Devis récents</h2>
+                <h2>Devis recents</h2>
                 <a href="{% url 'admin:quotes_quoterequest_changelist' %}">Tout voir</a>
             </div>
             <div class="sp-admin-list">
                 {% for quote in sp_dashboard.recent_quotes %}
                 <a href="{% url 'admin:quotes_quoterequest_change' quote.id %}">
-                    <span>#{{ quote.id }} · {{ quote.company_name }}</span>
+                    <span>#{{ quote.id }} - {{ quote.company_name }}</span>
                     <strong>{{ quote.get_status_display }}</strong>
-                    <small>{{ quote.product_type }} · {{ quote.created_at|date:"d/m/Y H:i" }}</small>
+                    <small>{{ quote.product_type }} - {{ quote.created_at|date:"d/m/Y H:i" }}</small>
                 </a>
                 {% empty %}
                 <p>Aucun devis pour le moment.</p>

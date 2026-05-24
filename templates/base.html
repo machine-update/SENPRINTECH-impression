@@ -29,6 +29,16 @@
 					<p class="footer-brand">SenPrinTech</p>
 					<p>Impression digitale rapide pour marques, evenements et entrepreneurs.</p>
 				</div>
+				<div class="footer-links">
+					<p>Informations</p>
+					<a href="{% url 'privacy_policy' %}">Confidentialité</a>
+					<a href="{% url 'terms' %}">CGU</a>
+					<a href="{% url 'sales_terms' %}">Conditions de vente</a>
+					<a href="{% url 'delivery_policy' %}">Livraison</a>
+					<a href="{% url 'returns_policy' %}">Retours & remboursements</a>
+					<a href="{% url 'legal_notice' %}">Mentions légales</a>
+					<a href="{% url 'faq' %}">FAQ</a>
+				</div>
 				<div class="footer-contact">
 					<a href="mailto:contact@senprintech.com">contact@senprintech.com</a>
 					<a href="tel:+221710460959">+221 71 046 09 59</a>
@@ -38,5 +48,17 @@
 			</div>
 		</footer>
 		{% include "includes/whatsapp_floating.html" %}
+		<script>
+			window.addEventListener("DOMContentLoaded", function () {
+				document.querySelectorAll(".site-message").forEach(function (message) {
+					window.setTimeout(function () {
+						message.classList.add("is-hiding");
+						window.setTimeout(function () {
+							message.remove();
+						}, 400);
+					}, 4500);
+				});
+			});
+		</script>
 	</body>
 </html>
