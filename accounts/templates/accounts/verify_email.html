@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Vérification email - SenPrinTech{% endblock %}
+
+{% block content %}
+<section class="account-page">
+    <div class="section-inner auth-shell">
+        <div class="auth-hero-panel">
+            <p class="eyebrow">Sécurité compte</p>
+            <h1>Confirmez votre adresse email.</h1>
+            <p>Nous protégeons votre espace client, vos commandes et vos fichiers d'impression avec une vérification email.</p>
+            <div class="auth-benefits">
+                <span>Code valable 15 min</span>
+                <span>Compte protégé</span>
+                <span>Emails confidentiels</span>
+            </div>
+        </div>
+        <div class="account-card auth-card">
+            <p class="eyebrow">Code de vérification</p>
+            <h1>Entrez le code reçu</h1>
+            <p class="account-muted">Nous avons envoyé un code à <strong>{{ user_email }}</strong>.</p>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <label>
+                    <span>{{ form.code.label }}</span>
+                    {{ form.code }}
+                    {% for error in form.code.errors %}<small>{{ error }}</small>{% endfor %}
+                </label>
+                <button class="button button-primary" type="submit">Confirmer mon email</button>
+            </form>
+            <form method="post" action="{% url 'accounts:resend_verification' %}" class="auth-form auth-resend-form">
+                {% csrf_token %}
+                <button class="text-link-button" type="submit">Renvoyer le code</button>
+            </form>
+            <p class="account-switch">Déjà confirmé ? <a href="{% url 'accounts:login' %}">Se connecter</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}

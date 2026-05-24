@@ -39,6 +39,12 @@ class CustomerRegistrationForm(UserCreationForm):
                 }
             )
 
+    def clean_email(self):
+        email = self.cleaned_data["email"].strip().lower()
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("Un compte existe déjà avec cette adresse email.")
+        return email
+
 
 class CustomerLoginForm(AuthenticationForm):
     username = forms.CharField(label="Email ou nom d'utilisateur")
@@ -69,6 +75,14 @@ class CustomerLoginForm(AuthenticationForm):
                 password=password,
             )
             if self.user_cache is None:
+                inactive_user = None
+                lookup = {"username__iexact": username_or_email}
+                if "@" in username_or_email:
+                    lookup = {"email__iexact": username_or_email}
+                candidate = User.objects.filter(**lookup).first()
+                if candidate and not candidate.is_active and candidate.check_password(password):
+                    inactive_user = candidate
+                self.inactive_user = inactive_user
                 raise ValidationError(
                     "Identifiants incorrects. Vérifiez votre email, nom d'utilisateur ou mot de passe.",
                     code="invalid_login",
@@ -76,3 +90,25 @@ class CustomerLoginForm(AuthenticationForm):
             self.confirm_login_allowed(self.user_cache)
 
         return self.cleaned_data
+
+
+class EmailVerificationForm(forms.Form):
+    code = forms.CharField(
+        label="Code de vérification",
+        max_length=6,
+        min_length=6,
+        widget=forms.TextInput(
+            attrs={
+                "class": "auth-input verification-code-input",
+                "placeholder": "000000",
+                "inputmode": "numeric",
+                "autocomplete": "one-time-code",
+            }
+        ),
+    )
+
+    def clean_code(self):
+        code = self.cleaned_data["code"].strip()
+        if not code.isdigit():
+            raise forms.ValidationError("Le code doit contenir uniquement des chiffres.")
+        return code

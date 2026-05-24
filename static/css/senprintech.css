@@ -1079,6 +1079,29 @@ p {
     transform: translateY(-10px);
 }
 
+.text-link-button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--gold-dark);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 850;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.auth-resend-form {
+    margin-top: 14px;
+}
+
+.verification-code-input {
+    font-size: 24px !important;
+    font-weight: 850;
+    letter-spacing: .22em;
+    text-align: center;
+}
+
 .site-message.success {
     border-color: #bbf7d0;
     background: #f0fdf4;
